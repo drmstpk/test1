@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>メニュー選択</title>
+</head>
+<body>
+    <h2>メニュー選択</h2>
+    
+    <!-- チェックボックスとラベル -->
+    <label>
+        <input type="checkbox" name="menu" value="1000" data-name="ハンバーグ">
+        ハンバーグ (¥1000)
+    </label><br>
+    
+    <label>
+        <input type="checkbox" name="menu" value="1500" data-name="ステーキ">
+        ステーキ (¥1500)
+    </label><br>
+
+    <label>
+        <input type="checkbox" name="menu" value="800" data-name="チャーハン">
+        チャーハン (¥800)
+    </label><br>
+
+    <!-- 選択内容を保存し、別ページに移動 -->
+    <button onclick="saveSelection()">合計金額を表示（別ページ）</button>
+
+    <script>
+        function saveSelection() {
+            const checkboxes = document.querySelectorAll('input[name="menu"]');
+            let selectedItems = [];
+            let totalPrice = 0;
+
+            checkboxes.forEach((checkbox) => {
+                if (checkbox.checked) {
+                    selectedItems.push(checkbox.getAttribute("data-name") + " (¥" + checkbox.value + ")");
+                    totalPrice += parseInt(checkbox.value, 10);
+                }
+            });
+
+            // 過去の注文履歴を取得し、ない場合は空配列を設定
+            let orderHistory = JSON.parse(localStorage.getItem('orderHistory')) || [];
+
+            // 今回の注文データを履歴に追加
+            if (selectedItems.length > 0) {
+                orderHistory.push({
+                    items: selectedItems,
+                    total: totalPrice,
+                    date: new Date().toLocaleString() // 注文日時を記録
+                });
+            }
+
+            // localStorageに注文履歴を保存
+            localStorage.setItem('orderHistory', JSON.stringify(orderHistory));
+
+            // 別のページに移動
+            window.location.href = 'test3.html';
+        }
+    </script>
+</body>
+</html>
