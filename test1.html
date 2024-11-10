@@ -4,10 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>メニュー選択</title>
+    <!-- Firebase SDKを読み込み -->
+    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-database.js"></script>
 </head>
 <body>
     <h2>メニュー選択</h2>
-    
     <!-- チェックボックスとラベル -->
     <label>
         <input type="checkbox" name="menu" value="1000" data-name="ハンバーグ">
@@ -24,10 +26,26 @@
         チャーハン (¥800)
     </label><br>
 
-    <!-- 選択内容を保存し、別ページに移動 -->
-    <button onclick="saveSelection()">合計金額を表示（別ページ）</button>
+    <!-- 選択内容を保存 -->
+    <button onclick="saveSelection()">注文を確定</button>
 
     <script>
+        // Firebaseの設定情報（正しい値を貼り付け）
+        const firebaseConfig = {
+            apiKey: "API_KEY",
+            authDomain: "PROJECT_ID.firebaseapp.com",
+            databaseURL: "https://PROJECT_ID.firebaseio.com",
+            projectId: "PROJECT_ID",
+            storageBucket: "PROJECT_ID.appspot.com",
+            messagingSenderId: "SENDER_ID",
+            appId: "APP_ID",
+            measurementId: "G-MEASUREMENT_ID"
+        };
+
+        // Firebase初期化
+        const app = firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
         function saveSelection() {
             const checkboxes = document.querySelectorAll('input[name="menu"]');
             let selectedItems = [];
@@ -40,23 +58,27 @@
                 }
             });
 
-            // 過去の注文履歴を取得し、ない場合は空配列を設定
-            let orderHistory = JSON.parse(localStorage.getItem('orderHistory')) || [];
-
-            // 今回の注文データを履歴に追加
             if (selectedItems.length > 0) {
-                orderHistory.push({
+                const orderData = {
                     items: selectedItems,
                     total: totalPrice,
-                    date: new Date().toLocaleString() // 注文日時を記録
-                });
+                    date: new Date().toLocaleString()
+                };
+
+                // Firebaseに注文データを保存し、保存が成功したら次のページに移動
+                database.ref('orders').push(orderData)
+                    .then(() => {
+                        alert("注文が確定しました！");
+                        // データ保存後に `test3.html` に移動
+                        window.location.href = 'https://drmstpk.github.io/test1/index.html';
+                    })
+                    .catch((error) => {
+                        console.error("注文の保存中にエラーが発生しました: ", error);
+                        alert("注文の保存に失敗しました。もう一度お試しください。");
+                    });
+            } else {
+                alert("メニューを選択してください");
             }
-
-            // localStorageに注文履歴を保存
-            localStorage.setItem('orderHistory', JSON.stringify(orderHistory));
-
-            // 別のページに移動
-            window.location.href = 'https://drmstpk.github.io/test1/index.html';
         }
     </script>
 </body>
