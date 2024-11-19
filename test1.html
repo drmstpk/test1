@@ -3,83 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>メニュー選択</title>
-    <!-- Firebase SDKを読み込み -->
-    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-database.js"></script>
+    <title>選択したメニューの確認</title>
 </head>
 <body>
-    <h2>メニュー選択</h2>
-    <!-- チェックボックスとラベル -->
-    <label>
-        <input type="checkbox" name="menu" value="1000" data-name="ハンバーグ">
-        ハンバーグ (¥1000)
-    </label><br>
+    <h2>選択したメニューの確認</h2>
     
-    <label>
-        <input type="checkbox" name="menu" value="1500" data-name="ステーキ">
-        ステーキ (¥1500)
-    </label><br>
-
-    <label>
-        <input type="checkbox" name="menu" value="800" data-name="チャーハン">
-        チャーハン (¥800)
-    </label><br>
-
-    <!-- 選択内容を保存 -->
-    <button onclick="saveSelection()">注文を確定</button>
+    <!-- パスワード入力フォーム -->
+    <label for="password">パスワードを入力してください:</label>
+    <input type="password" id="password">
+    <button onclick="verifyPassword()">確認</button>
+    
+    <!-- 選択結果を表示するエリア -->
+    <div id="result" style="display: none;"></div>
 
     <script>
-        // Firebaseの設定情報（正しい値を貼り付け）
-        const firebaseConfig = {
-            apiKey: "API_KEY",
-            authDomain: "PROJECT_ID.firebaseapp.com",
-            databaseURL: "https://PROJECT_ID.firebaseio.com",
-            projectId: "PROJECT_ID",
-            storageBucket: "PROJECT_ID.appspot.com",
-            messagingSenderId: "SENDER_ID",
-            appId: "APP_ID",
-            measurementId: "G-MEASUREMENT_ID"
-        };
+        // 正しいパスワードを設定
+        const correctPassword = "1234";  // 好きなパスワードを設定
 
-        // Firebase初期化
-        const app = firebase.initializeApp(firebaseConfig);
-        const database = firebase.database();
-
-        function saveSelection() {
-            const checkboxes = document.querySelectorAll('input[name="menu"]');
-            let selectedItems = [];
-            let totalPrice = 0;
-
-            checkboxes.forEach((checkbox) => {
-                if (checkbox.checked) {
-                    selectedItems.push(checkbox.getAttribute("data-name") + " (¥" + checkbox.value + ")");
-                    totalPrice += parseInt(checkbox.value, 10);
-                }
-            });
-
-            if (selectedItems.length > 0) {
-                const orderData = {
-                    items: selectedItems,
-                    total: totalPrice,
-                    date: new Date().toLocaleString()
-                };
-
-                // Firebaseに注文データを保存し、保存が成功したら次のページに移動
-                database.ref('orders').push(orderData)
-                    .then(() => {
-                        alert("注文が確定しました！");
-                        // データ保存後に `test3.html` に移動
-                        window.location.href = 'https://drmstpk.github.io/test1/index.html';
-                    })
-                    .catch((error) => {
-                        console.error("注文の保存中にエラーが発生しました: ", error);
-                        alert("注文の保存に失敗しました。もう一度お試しください。");
-                    });
+        function verifyPassword() {
+            const enteredPassword = document.getElementById('password').value;
+            
+            if (enteredPassword === correctPassword) {
+                showOrderHistory();
             } else {
-                alert("メニューを選択してください");
+                alert("パスワードが間違っています。");
+            }
+        }
+
+        function showOrderHistory() {
+            // localStorageから注文履歴を取得
+            const orderHistory = JSON.parse(localStorage.getItem('orderHistory'));
+            const result = document.getElementById('result');
+            
+            if (orderHistory && orderHistory.length > 0) {
+                result.style.display = "block";
+                result.innerHTML = "<h3>注文履歴:</h3>";
+                
+                orderHistory.forEach((order, index) => {
+                    result.innerHTML += `<p><strong>注文 ${index + 1} (${order.date})</strong><br>メニュー: <br>${order.items.join("<br>")}<br>合計金額: ¥${order.total}</p><hr>`;
+                });
+            } else {
+                result.innerText = "注文履歴がありません";
             }
         }
     </script>
 </body>
+<a href="test.html">もう一度注文</a>
+
+<a href="paypay::/">ペイペイ</a>
 </html>
