@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>メニュー管理</title>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+        import { getDatabase, ref, push } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBhC42q3yJq8kIXTKkl67nSiVX_Wn8_NK8",
+            authDomain: "test1-dcefa.firebaseapp.com",
+            projectId: "test1-dcefa",
+            storageBucket: "test1-dcefa.firebasestorage.app",
+            messagingSenderId: "751353137597",
+            appId: "1:751353137597:web:16be05a30d56a3b19baad4",
+            measurementId: "G-H85YJ00FY2"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+
+        document.addEventListener('DOMContentLoaded', function () {
+            document.getElementById('addMenuButton').addEventListener('click', function () {
+                const menuName = document.getElementById('menuName').value;
+                const menuPrice = document.getElementById('menuPrice').value;
+
+                if (menuName && menuPrice) {
+                    const menuRef = ref(database, 'menus');
+                    push(menuRef, {
+                        name: menuName,
+                        price: parseInt(menuPrice, 10)
+                    }).then(() => {
+                        alert('メニューを追加しました！');
+                        document.getElementById('menuName').value = '';
+                        document.getElementById('menuPrice').value = '';
+                    }).catch((error) => {
+                        console.error('メニュー追加中にエラーが発生しました: ', error);
+                        alert('メニュー追加に失敗しました。');
+                    });
+                } else {
+                    alert('商品名と値段を入力してください。');
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+    <h2>メニュー管理</h2>
+    <div>
+        <input type="text" id="menuName" placeholder="商品名">
+        <input type="number" id="menuPrice" placeholder="値段">
+        <button id="addMenuButton">メニューを追加</button>
+    </div>
+</body>
+</html>
