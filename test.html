@@ -4,12 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>メニュー選択</title>
-    <!-- Firebase SDKの最新バージョンをモジュールとしてインポート -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-        import { getDatabase, ref, push } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
+        import { getDatabase, ref, onValue, push } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
 
-        // Firebaseの設定情報
         const firebaseConfig = {
             apiKey: "AIzaSyBhC42q3yJq8kIXTKkl67nSiVX_Wn8_NK8",
             authDomain: "test1-dcefa.firebaseapp.com",
@@ -20,12 +18,35 @@
             measurementId: "G-H85YJ00FY2"
         };
 
-        // Firebaseの初期化
         const app = initializeApp(firebaseConfig);
         const database = getDatabase(app);
 
-        // 注文確定ボタンのイベントリスナー
         document.addEventListener('DOMContentLoaded', function () {
+            const menuContainer = document.getElementById('menuContainer');
+
+            // メニューをFirebaseから取得して表示
+            const menuRef = ref(database, 'menus');
+            onValue(menuRef, (snapshot) => {
+                menuContainer.innerHTML = ''; // 一旦リセット
+                snapshot.forEach((childSnapshot) => {
+                    const menu = childSnapshot.val();
+                    const menuId = childSnapshot.key;
+
+                    const label = document.createElement('label');
+                    const checkbox = document.createElement('input');
+                    checkbox.type = 'checkbox';
+                    checkbox.name = 'menu';
+                    checkbox.value = menu.price;
+                    checkbox.setAttribute('data-name', menu.name);
+
+                    label.appendChild(checkbox);
+                    label.appendChild(document.createTextNode(`${menu.name} (¥${menu.price})`));
+                    menuContainer.appendChild(label);
+                    menuContainer.appendChild(document.createElement('br'));
+                });
+            });
+
+            // 注文確定ボタンの処理
             document.getElementById('orderButton').addEventListener('click', function () {
                 const checkboxes = document.querySelectorAll('input[name="menu"]');
                 let selectedItems = [];
@@ -33,7 +54,7 @@
 
                 checkboxes.forEach((checkbox) => {
                     if (checkbox.checked) {
-                        selectedItems.push(checkbox.getAttribute("data-name") + " (¥" + checkbox.value + ")");
+                        selectedItems.push(checkbox.getAttribute('data-name') + " (¥" + checkbox.value + ")");
                         totalPrice += parseInt(checkbox.value, 10);
                     }
                 });
@@ -45,7 +66,6 @@
                         date: new Date().toLocaleString()
                     };
 
-                    // Firebase Realtime Databaseに注文を保存
                     const ordersRef = ref(database, 'orders');
                     push(ordersRef, orderData)
                         .then(() => {
@@ -59,65 +79,15 @@
                     alert("メニューを選択してください");
                 }
             });
-
-            // メニュー追加ボタンのイベントリスナー
-            document.getElementById('addMenuButton').addEventListener('click', function () {
-                const menuName = document.getElementById('menuName').value;
-                const menuPrice = document.getElementById('menuPrice').value;
-
-                // 商品名と値段が空でないことを確認
-                if (menuName && menuPrice) {
-                    const menuContainer = document.getElementById('menuContainer');
-                    const newLabel = document.createElement('label');
-                    const newCheckbox = document.createElement('input');
-                    newCheckbox.type = 'checkbox';
-                    newCheckbox.name = 'menu';
-                    newCheckbox.value = menuPrice;
-                    newCheckbox.setAttribute('data-name', menuName);
-
-                    // 削除ボタンを作成
-                    const deleteButton = document.createElement('button');
-                    deleteButton.textContent = '削除';
-                    deleteButton.type = 'button';
-                    deleteButton.classList.add('deleteButton');
-                    deleteButton.addEventListener('click', function () {
-                        menuContainer.removeChild(newLabel);
-                    });
-
-                    // ラベルにチェックボックスと削除ボタンを追加
-                    newLabel.appendChild(newCheckbox);
-                    newLabel.appendChild(document.createTextNode(`${menuName} (¥${menuPrice})`));
-                    newLabel.appendChild(deleteButton);
-                    menuContainer.appendChild(newLabel);
-                    menuContainer.appendChild(document.createElement('br'));
-
-                    // 入力フォームをクリア
-                    document.getElementById('menuName').value = '';
-                    document.getElementById('menuPrice').value = '';
-                } else {
-                    alert("商品名と値段を入力してください");
-                }
-            });
         });
     </script>
 </head>
 <body>
     <h2>メニュー選択</h2>
-
-    <!-- メニュー追加フォーム -->
-    <div>
-        <input type="text" id="menuName" placeholder="商品名">
-        <input type="number" id="menuPrice" placeholder="値段">
-        <button id="addMenuButton">メニューを追加</button>
-    </div>
-
-    <!-- チェックボックスを追加するためのコンテナ -->
     <div id="menuContainer">
-        <!-- ここに動的にチェックボックスが追加されます -->
+        <!-- メニューがここに表示されます -->
     </div>
-
     <br>
-
-    <a href="paypay::/"><button id="orderButton">注文を確定</button></a>
+    <button id="orderButton">注文を確定</button>
 </body>
 </html>
