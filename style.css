@@ -1,14 +1,14 @@
 /* 管理者パスワード欄を目立たなくする */
 #adminLogin {
     position: fixed;
-    top: 0px; /* 画面の上端に固定 */
-    right: 10px; /* 画面の右端から10px */
+    top: 0px;
+    right: 10px;
     font-size: 0.9em;
     background-color: #f9f9f9;
     border: 1px solid #ccc;
     padding: 5px;
     box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
-    z-index: 1000; /* 他の要素の上に表示 */
+    z-index: 1000;
 }
 
 #nickname {
@@ -89,26 +89,26 @@
 
 #orderButton {
     position: absolute;
-    bottom: 0px; /* 画面の下端に固定 */
-    right: 20px; /* 画面の右端から20px */
-    width: 200px; /* ボタンの幅を大きく */
-    height: 80px; /* ボタンの高さを大きく */
-    font-size: 1.5em; /* フォントサイズを大きく */
-    background-color: #ff4500; /* 目立つオレンジ色 */
-    color: #fff; /* 文字色を白に */
+    bottom: 0px;
+    right: 20px;
+    width: 200px;
+    height: 80px;
+    font-size: 1.5em;
+    background-color: #ff4500;
+    color: #fff;
     border: none;
-    border-radius: 10px; /* 角を丸く */
+    border-radius: 10px;
     cursor: pointer;
     box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2);
-    z-index: 1000; /* 他の要素の上に表示 */
-    transition: background-color 0.3s; /* ホバー時の滑らかな変化 */
+    z-index: 1000;
+    transition: background-color 0.3s;
 }
 
 #orderButton:hover {
-    background-color: #e03e00; /* ホバー時に少し暗くする */
+    background-color: #e03e00;
 }
 
 .footer {
     position: relative;
-    padding-bottom: 100px; /* ボタン分の余白を確保 */
+    padding-bottom: 100px;
 }
