@@ -26,7 +26,6 @@ document.addEventListener('DOMContentLoaded', function () {
     const nicknameInput = document.getElementById('nickname');
 
     let selectedItems = {};
-
     // ページロード時にメニューを読み込む
     const menusRef = ref(database, 'menus');
     get(menusRef).then((snapshot) => {
