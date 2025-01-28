@@ -4,90 +4,59 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>メニュー選択</title>
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-        import { getDatabase, ref, onValue, push } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyBhC42q3yJq8kIXTKkl67nSiVX_Wn8_NK8",
-            authDomain: "test1-dcefa.firebaseapp.com",
-            projectId: "test1-dcefa",
-            storageBucket: "test1-dcefa.firebasestorage.app",
-            messagingSenderId: "751353137597",
-            appId: "1:751353137597:web:16be05a30d56a3b19baad4",
-            measurementId: "G-H85YJ00FY2"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const database = getDatabase(app);
-
-        document.addEventListener('DOMContentLoaded', function () {
-            const menuContainer = document.getElementById('menuContainer');
-
-            // メニューをFirebaseから取得して表示
-            const menuRef = ref(database, 'menus');
-            onValue(menuRef, (snapshot) => {
-                menuContainer.innerHTML = ''; // 一旦リセット
-                snapshot.forEach((childSnapshot) => {
-                    const menu = childSnapshot.val();
-                    const menuId = childSnapshot.key;
-
-                    const label = document.createElement('label');
-                    const checkbox = document.createElement('input');
-                    checkbox.type = 'checkbox';
-                    checkbox.name = 'menu';
-                    checkbox.value = menu.price;
-                    checkbox.setAttribute('data-name', menu.name);
-
-                    label.appendChild(checkbox);
-                    label.appendChild(document.createTextNode(`${menu.name} (¥${menu.price})`));
-                    menuContainer.appendChild(label);
-                    menuContainer.appendChild(document.createElement('br'));
-                });
-            });
-
-            // 注文確定ボタンの処理
-            document.getElementById('orderButton').addEventListener('click', function () {
-                const checkboxes = document.querySelectorAll('input[name="menu"]');
-                let selectedItems = [];
-                let totalPrice = 0;
-
-                checkboxes.forEach((checkbox) => {
-                    if (checkbox.checked) {
-                        selectedItems.push(checkbox.getAttribute('data-name') + " (¥" + checkbox.value + ")");
-                        totalPrice += parseInt(checkbox.value, 10);
-                    }
-                });
-
-                if (selectedItems.length > 0) {
-                    const orderData = {
-                        items: selectedItems,
-                        total: totalPrice,
-                        date: new Date().toLocaleString()
-                    };
-
-                    const ordersRef = ref(database, 'orders');
-                    push(ordersRef, orderData)
-                        .then(() => {
-                            alert("注文が確定しました！");
-                        })
-                        .catch((error) => {
-                            console.error("注文の保存中にエラーが発生しました: ", error);
-                            alert("注文の保存に失敗しました。もう一度お試しください。");
-                        });
-                } else {
-                    alert("メニューを選択してください");
-                }
-            });
-        });
-    </script>
+    <link rel="stylesheet" href="styles.css">
+    <script type="module" src="script.js" defer></script>
 </head>
 <body>
     <h2>メニュー選択</h2>
-    <div id="menuContainer">
-        <!-- メニューがここに表示されます -->
+
+    <div id="adminLogin">
+        <input type="password" id="adminPassword" placeholder="管理者パスワード">
+        <button id="loginButton">ログイン</button>
     </div>
-    <br>
-    <button id="orderButton">注文を確定</button>
+
+    <div id="adminSection" style="display: none;">
+        <h3>管理者用メニュー管理</h3>
+        <input type="text" id="menuName" placeholder="商品名">
+        <input type="number" id="menuPrice" placeholder="値段">
+        <input type="text" id="menuImage" placeholder="画像URL">
+        <select id="menuCategory">
+            <option value="フード">フード</option>
+            <option value="ドリンク">ドリンク</option>
+            <option value="その他">その他</option>
+        </select>
+        <div>
+            <label><input type="radio" name="menuTax" value="8" checked> 8% 消費税</label>
+            <label><input type="radio" name="menuTax" value="10"> 10% 消費税</label>
+        </div>
+        <button id="addMenuButton">メニューを追加</button>
+    </div>
+
+    <div class="menu-category" id="foodCategory">
+        <h2>フード</h2>
+        <div id="foodContainer" class="menu-container"></div>
+    </div>
+
+    <div class="menu-category" id="drinkCategory">
+        <h2>ドリンク</h2>
+        <div id="drinkContainer" class="menu-container"></div>
+    </div>
+
+    <div class="menu-category" id="otherCategory">
+        <h2>その他</h2>
+        <div id="otherContainer" class="menu-container"></div>
+    </div>
+
+    <input type="text" id="nickname" placeholder="ニックネームを入力してください">
+    <div>※ニックネームは商品受け取り時に使用します</div>
+        
+    <div id="selectedItems">
+        <h3>選択された商品</h3>
+    </div>
+    
+    <div class="footer">
+        <div>※支払いは商品受け取り時に行ってください</div>
+        <button id="orderButton">注文を確定</button>
+    </div>
 </body>
 </html>
