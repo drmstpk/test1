@@ -1,0 +1,89 @@
+#adminLogin {
+    position: fixed;
+    top: 0px;
+    right: 10px;
+    font-size: 0.9em;
+    background-color: #f9f9f9;
+    border: 1px solid #ccc;
+    padding: 5px;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+}
+
+#nickname {
+    width: 100%;
+    padding: 10px;
+    font-size: 1.2em;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+#selectedItems {
+    margin-top: 20px;
+    border: 1px solid #ccc;
+    padding: 10px;
+    background-color: #f9f9f9;
+}
+
+.menu-item {
+    display: inline-block;
+    text-align: center;
+    margin: 10px;
+    border: 1px solid #ccc;
+    padding: 10px;
+    width: 150px;
+    height: 280px;
+    background-color: #f9f9f9;
+    box-sizing: border-box;
+    position: relative;
+}
+
+.menu-item img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+}
+
+.menu-item p {
+    margin: 5px 0;
+}
+
+.quantity-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    margin-top: 10px;
+}
+
+.quantity-controls button {
+    width: 25px;
+    height: 25px;
+}
+
+#orderButton {
+    position: absolute;
+    bottom: 0px;
+    right: 20px;
+    width: 200px;
+    height: 80px;
+    font-size: 1.5em;
+    background-color: #ff4500;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    transition: background-color 0.3s;
+}
+
+#orderButton:hover {
+    background-color: #e03e00;
+}
+
+.footer {
+    position: relative;
+    padding-bottom: 100px;
+}
