@@ -23,10 +23,11 @@ document.addEventListener('DOMContentLoaded', function () {
     const passwordInput = document.getElementById('adminPassword');
     const loginButton = document.getElementById('loginButton');
     const selectedItemsContainer = document.getElementById('selectedItems');
-    const nicknameInput = document.getElementById('nickname'); // ニックネーム入力欄
+    const nicknameInput = document.getElementById('nickname');
 
     let selectedItems = {};
 
+    // ページロード時にメニューを読み込む
     const menusRef = ref(database, 'menus');
     get(menusRef).then((snapshot) => {
         if (snapshot.exists()) {
@@ -213,7 +214,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             }
 
-            // コピー用ボタンの追加
             const copyButton = document.createElement('button');
             copyButton.textContent = '合計金額をコピー';
             copyButton.addEventListener('click', function () {
